@@ -1,0 +1,119 @@
+<!-- movie-details.component.html -->
+<div class="container my-5">
+    @if (movie) {
+      <div class="card shadow-lg">
+        <div class="row g-0">
+          <!-- Poster Column -->
+          <div class="col-md-4">
+            <img 
+              [src]="movie.poster || 'assets/default-poster.jpg'" 
+              class="img-fluid rounded-start" 
+              alt="{{ movie.title }} poster"
+            >
+          </div>
+  
+          <!-- Details Column -->
+          <div class="col-md-8">
+            <div class="card-body">
+              <h1 class="card-title display-4 mb-4">{{ movie.title }} ({{ movie.year }})</h1>
+              
+              <div class="row mb-4">
+                <div class="col-md-6">
+                  <p class="mb-1"><strong>Director:</strong> {{ movie.director }}</p>
+                  <p class="mb-1"><strong>Cast:</strong> {{ movie.actors }}</p>
+                  <p class="mb-1"><strong>Runtime:</strong> {{ movie.runtime }}</p>
+                </div>
+                <div class="col-md-6">
+                  <p class="mb-1"><strong>Genre:</strong> {{ movie.genre }}</p>
+                  <p class="mb-1"><strong>Rating:</strong> {{ movie.rated }}</p>
+                  <p class="mb-1"><strong>Released:</strong> {{ movie.released }}</p>
+                </div>
+              </div>
+  
+              <h4 class="mt-4">Plot Summary</h4>
+              <p class="lead">{{ movie.plot }}</p>
+
+              <!-- Movie Rates Section -->
+              <h4 class="mt-4">Movie Ratings</h4>
+
+              <!-- Add Rating Form -->
+              <div class="card mb-4">
+                <div class="card-body">
+                  <h5 class="card-title">Rate this Movie</h5>
+                  <div class="d-flex align-items-center gap-3">
+                    <input 
+                      type="number" 
+                      class="form-control" 
+                      style="max-width: 100px;"
+                      [(ngModel)]="newRating"
+                      min="1"
+                      max="5"
+                      [class.is-invalid]="isInvalidRating"
+                    >
+                    <button 
+                      class="btn btn-primary"
+                      (click)="submitRating()"
+                      [disabled]="isInvalidRating || isSubmitting"
+                    >
+                      @if (isSubmitting) {
+                        <span class="spinner-border spinner-border-sm me-1"></span>
+                        Rating...
+                      } @else {
+                        Submit Rating
+                      }
+                    </button>
+                  </div>
+                  @if (isInvalidRating) {
+                    <div class="text-danger mt-2">
+                      Rating must be between 1 and 5
+                    </div>
+                  }
+                  @if (ratingError) {
+                    <div class="alert alert-danger mt-2">
+                      {{ ratingError }}
+                    </div>
+                  }
+                </div>
+              </div>
+
+              @if (movieRates.length > 0) {
+                <div class="table-responsive">
+                  <table class="table table-striped">
+                    <thead>
+                      <tr>
+                        <th>Username</th>
+                        <th>Rating</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      @for (rate of movieRates; track rate.username) {
+                        <tr>
+                          <td>{{ rate.username }}</td>
+                          <td>{{ rate.rating }}/5</td>
+                        </tr>
+                      }
+                    </tbody>
+                  </table>
+                </div>
+              } @else {
+                <p>No ratings available for this movie.</p>
+              }
+  
+              <div class="mt-4">
+                <a [routerLink]="getReturnRoute()" class="btn btn-outline-primary">
+                  <i class="bi bi-arrow-left me-2"></i>Back to Movies
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    } @else if (isLoading) {
+      <div class="text-center py-5">
+        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+    }
+     
+  </div>
